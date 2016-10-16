@@ -1,24 +1,23 @@
 
-NODE_VERSION := 4.3.x
+# change this node version to whatever you require. see https://github.com/tj/n
+NODE_VERSION := 4.3.2
 
 node = node/bin/node
 npm = node/bin/npm
+
 
 all: deps
 
 deps: node node_modules
 
-node_modules: package.json
+node_modules: node package.json
 	$(npm) install
 	touch node_modules
 
-node: 
-	if [ ! -f node/Makefile ] ; then  \
-		git clone https://github.com/fragmentz/vendored-node.git node; fi
-	make -C ./node
-	mkdir -p bin
-	ln -sf ../node/bin/node bin/node
-	ln -sf ../node/bin/npm bin/npm
+node:
+	@if [ ! -f node/Makefile ] ; then  \
+		git clone https://github.com/fragmentz/vendored-node node; fi
+	make -C ./node NODE_VERSION=$(NODE_VERSION)
 
 clean:
 	rm -rf node_modules
@@ -26,4 +25,5 @@ clean:
 clean-all: clean
 	rm -rf node
 
-.PHONY clean-all clean deps all
+.PHONY: clean-all clean node deps all
+

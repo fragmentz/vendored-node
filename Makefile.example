@@ -1,0 +1,29 @@
+
+NODE_VERSION := 4.3.x
+
+node = node/bin/node
+npm = node/bin/npm
+
+all: deps
+
+deps: node node_modules
+
+node_modules: package.json
+	$(npm) install
+	touch node_modules
+
+node: 
+	if [ ! -f node/Makefile ] ; then  \
+		git clone https://github.com/fragmentz/vendored-node.git node; fi
+	make -C ./node
+	mkdir -p bin
+	ln -sf ../node/bin/node bin/node
+	ln -sf ../node/bin/npm bin/npm
+
+clean:
+	rm -rf node_modules
+
+clean-all: clean
+	rm -rf node
+
+.PHONY clean-all clean deps all

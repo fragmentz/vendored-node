@@ -17,6 +17,7 @@ n/bin/n:
 clean:
 	find . -mindepth 1 -maxdepth 1          \
 		-type d                               \
-		! -name vendored-node                \
+		! -name ".*"                          \
+		! -name vendored-node                 \
 		-exec rm -rf "{}" \;
 

@@ -1,5 +1,5 @@
 #!/bin/sh
 
-SCRIPT_DIR="$(A="$(which "$0")"; A="$(readlink "$A" || echo "$A")"; echo "$(cd "$(dirname "$A")" && pwd)")"
+SCRIPT_DIR="$(p="$0"; while l="$(readlink "$p")"; do p="$(dirname "$p")/$l"; done; dirname $p)"
 PATH="$SCRIPT_DIR":$PATH exec "$SCRIPT_DIR/_npm" "$@"
 

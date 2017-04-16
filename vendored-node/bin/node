@@ -1,6 +1,5 @@
 #!/bin/sh
 
-SCRIPT_PATH="$(p="$0"; while l="$(readlink "$p")"; do p="$(dirname "$p")/$l"; done; echo $p)"
-SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
+SCRIPT_DIR="$(A="$(which "$0")"; A="$(readlink "$A" || echo "$A")"; echo "$(cd "$(dirname "$A")" && pwd)")"
 PATH="$SCRIPT_DIR":$PATH exec "$SCRIPT_DIR/_node" "$@"
 

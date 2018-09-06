@@ -30,17 +30,22 @@ require the presence of node.  `Make` is a particularly simple, and ubiquitous w
 to do this.  An example Makefile is included, which you can copy to your project as
 a starter.
 
-    $ cp node/Makefile.example ./Makefile
+    # careful! this could overwrite any existing Makefile in this directory:
+    $ wget https://raw.githubusercontent.com/fragmentz/vendored-node/master/Makefile.example > Makefile
     
+Now, from a clean checkout of your project, you can install node, and run. Like this:
 
-You can link to 
-node and npm from a more convenient location if you prefer it:
+    $ git clone <my-project-git-url>
+    $ cd my-project
+    $ make
+    $ node/bin/npm start
 
-    $ ln -s ../node/bin/node bin/node
-    $ ln -s ../node/bin/npm bin/npm
+If you don't like typing `node/bin/...` before your node global commands, see *[A useful function for development](#A-useful-function-dfor-development)* below.
 
-    $ bin/npm install 
-    $ bin/node app.js
+You may also want to gitignore the node directory, to avoid putting it in source control:
+
+    $ cd my-project
+    $ echo "node/" >> .gitignore
 
 ## Global NPM Modules
 
@@ -60,6 +65,46 @@ of node is used for subsequent invocations.
     3.1.2
 
 
+## A useful function for development
+
+This shell function is useful during development
+
+```
+# usage:
+# withnode <cmd> [<args>...]
+#
+# Invokes <cmd> after adjusting PATH to include the appropriate local node/bin
+# directory.  `node/bin` is first located by searching up the directory tree
+# starting with the current working directory.
+#
+function withnode() {
+    path=$(pwd)
+    while [[ $path != / ]]; do
+        if [ -x $path/node/bin/node ] ; then
+            break;
+        fi
+        path="$(readlink "$path"/.. || echo "$path/..")"
+    done
+    if [ ! -x $path/node/bin/node ] ; then
+        1>&2 echo "no node found"
+        return
+    fi
+    PATH="$path/node/bin":$PATH "$@"
+}
+```
+
+With that in your shell, you can call node global binaries, from any dir inside your project root, like this:
+
+    # first cd somewhere inside your project
+    $ cd my-project/some-sub-dir
+    
+    # now call your command as you normally would, but prefix it with `withnode`
+    $ withnode node -v
+    $ withnode npm install foo
+    $ withnode gulp build
+    ...
+
+    
 ## A word of advice: Uninstall Node.js, use vendored-node in every project
 
     $ node --version

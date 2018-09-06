@@ -83,13 +83,17 @@ function withnode() {
         if [ -x $path/node/bin/node ] ; then
             break;
         fi
-        path="$(readlink "$path"/.. || echo "$path/..")"
+        path="$(readlink "$path"/.. || { cd "$path/.." && pwd -P; })"
     done
     if [ ! -x $path/node/bin/node ] ; then
         1>&2 echo "no node found"
         return
     fi
-    PATH="$path/node/bin":$PATH "$@"
+    if [ -n "$1" ] ; then
+        PATH="$path/node/bin":$PATH "$@"
+    else
+        echo "$path/node/bin/node"
+    fi
 }
 ```
 

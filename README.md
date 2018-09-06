@@ -40,7 +40,7 @@ Now, from a clean checkout of your project, you can install node, and run. Like 
     $ make
     $ node/bin/npm start
 
-If you don't like typing `node/bin/...` before your node global commands, see *[A useful function for development](#A-useful-function-dfor-development)* below.
+If you don't like typing `node/bin/...` before your node global commands, see *[A useful function for development](#a-useful-function-for-development)* below.
 
 You may also want to gitignore the node directory, to avoid putting it in source control:
 
